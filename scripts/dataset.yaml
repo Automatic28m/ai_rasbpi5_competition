@@ -1,0 +1,11 @@
+# กำหนด Path หรือตำแหน่งที่เก็บไฟล์ภาพและ Label (สามารถใช้ Relative Path หรือ Absolute Path ได้)
+path: ./dataset          # โฟลเดอร์หลักที่เก็บข้อมูลทั้งหมด
+train: images/train      # โฟลเดอร์เก็บภาพสำหรับ Train (เทียบจาก path หลัก)
+val: images/val          # โฟลเดอร์เก็บภาพสำหรับ Validate (เทียบจาก path หลัก)
+
+# จำนวนคลาส (Number of Classes)
+nc: 1                    
+
+# ชื่อของคลาสเรียงตามลำดับ Index (เริ่มจาก 0)
+names: 
+  0: 'target_object'
