@@ -1,3 +1,12 @@
+'''
+4. Frozen Backbone
+Highly recommended for this specific scenario. 
+Freezing the first 10 layers saves massive CPU computation time, 
+allowing you to train on larger images without slowing down the process. 
+It also prevents your small dataset from overwriting the model's core edge-detection abilities.
+'''
+
+
 from ultralytics import YOLO
 
 model = YOLO("yolo26n.pt")
@@ -6,14 +15,14 @@ print("Starting Frozen Backbone Training...")
 model.train(
     data="dataset.yaml",
     epochs=100,
-    batch=16,
-    imgsz=480,         
+    batch=8,
+    imgsz=480,
     patience=20,
     device='cpu',
     workers=4,
-    optimizer="AdamW",
-    lr0=0.005,         # ปรับ LR สูงขึ้นเล็กน้อยได้เพราะ Backbone ปลอดภัย
-    freeze=10          # ล็อคน้ำหนัก 10 เลเยอร์แรกของโมเดล
+    optimizer='AdamW',
+    lr0=0.005,         # Slightly higher LR is safe when the backbone is frozen
+    freeze=10
 )
 
 best_model = YOLO("runs/detect/train/weights/best.pt")
@@ -23,5 +32,5 @@ best_model.export(
     simplify=True,
     dynamic=False,
     imgsz=320,
-    half=True          # บีบอัดเป็น FP16
-)[cite: 2]
+    half=True
+)
