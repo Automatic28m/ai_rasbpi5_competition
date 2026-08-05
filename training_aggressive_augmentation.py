@@ -1,26 +1,38 @@
+'''
+3. Aggressive Augmentation
+The best defense against a tiny dataset. 
+This script artificially expands your data by manipulating, rotating, and blending images together, 
+forcing the model to learn the object rather than memorizing the background.
+'''
+
+
 from ultralytics import YOLO
 
 model = YOLO("yolo26n.pt")
 
-print("Starting High-Res Feature Extractor Training...")
+print("Starting Aggressive Augmentation...")
 model.train(
     data="dataset.yaml",
-    epochs=150,
-    batch=16,
-    imgsz=480,         # ขยายภาพขึ้นเพื่อความแม่นยำ 
-    patience=30,
+    epochs=200,        # Extended epochs for learning through distortions
+    batch=8,
+    imgsz=320,
+    patience=50,       # Higher patience to tolerate loss fluctuations
     device='cpu',
     workers=4,
+    optimizer='AdamW',
     lr0=0.001,
-    cos_lr=True
+    cos_lr=True,
+    mosaic=1.0,
+    degrees=10,
+    translate=0.1
 )
 
-# บีบขนาดภาพกลับมาที่ 320 ตอน Export เพื่อให้ประมวลผลบนบอร์ดได้ FPS สูง
 best_model = YOLO("runs/detect/train/weights/best.pt")
 best_model.export(
     format="onnx",
     opset=12,
     simplify=True,
     dynamic=False,
-    imgsz=320
-)[cite: 2]
+    imgsz=320,
+    end2end=False
+)
